@@ -11,16 +11,16 @@ server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server.bind((HOST, PORT))
 server.listen()
 
-client = []
+clients = []
 names = []
 
 def broadcast(message):
-    for clients in client:
+    for client in clients:
             try:
-                clients.send(message)
+                client.send(message)
             except:
                 clients.close()
-                remove(clients)
+                remove(client)
             
 # Create a socket object
 def handle_client(client):
@@ -39,15 +39,15 @@ def handle_client(client):
 
 def receive():
     while True:
-        clients, address = server.accept()
+        client, address = server.accept()
         print(f'Connected with {str(address)}')
-        clients.send('Name'.encode('ascii'))
-        name = clients.recv(1024).decode('ascii')
+        client.send('Name'.encode('ascii'))
+        name = client.recv(1024).decode('ascii')
         names.append(name)
-        clients.send('Connected to the server'.encode('ascii'))
+        client.send('Connected to the server'.encode('ascii'))
         broadcast(f'{name} joined the chat'.encode('ascii'))
-        client.append(clients)
-        thread = threading.Thread(target=handle_client, args=(clients,))
+        clients.append(client)
+        thread = threading.Thread(target=handle_client, args=(client,))
         thread.start()
     
     
