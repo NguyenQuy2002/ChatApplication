@@ -14,6 +14,7 @@ server.listen()
 clients = []
 names = []
 
+#send message to all client
 def broadcast(message):
     for client in clients:
             try:
